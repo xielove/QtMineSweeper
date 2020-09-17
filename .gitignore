@@ -1,0 +1,5 @@
+*.exe
+*.dll
+*.o
+.qmake.stash
+*.pro.user
