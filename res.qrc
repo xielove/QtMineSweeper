@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/imgs">
+        <file>img30/1.png</file>
+        <file>img30/2.png</file>
+        <file>img30/3.png</file>
+        <file>img30/4.png</file>
+        <file>img30/5.png</file>
+        <file>img30/6.png</file>
+        <file>img30/7.png</file>
+        <file>img30/8.png</file>
+        <file>img30/blank.png</file>
+        <file>img30/explode.png</file>
+        <file>img30/flag.png</file>
+        <file>img30/initial.png</file>
+        <file>img30/question.png</file>
+        <file>stoping.jpg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/continue.jpg</file>
+        <file>icons/new.jpg</file>
+        <file>icons/stop.jpg</file>
+        <file>icons/logo.png</file>
+    </qresource>
+</RCC>

@@ -2,4 +2,4 @@
 *.dll
 *.o
 .qmake.stash
-*.pro.user
+*pro.user*
