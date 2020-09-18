@@ -2,7 +2,7 @@
 #define COMMONDEF_H
 
 #include <utility>
-
+#include <string>
 typedef std::pair<int, int> FieldPos;
 
 struct FieldArgs
@@ -24,5 +24,11 @@ namespace MinesState
         Init, Question, Flag
     };
 }
+
+class GameResource
+{
+
+};
+
 
 #endif // COMMONDEF_H

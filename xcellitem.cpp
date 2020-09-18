@@ -13,7 +13,7 @@ XCellItem::~XCellItem()
 XCellItem::XCellItem(QGraphicsItem *parent)
    :QGraphicsPixmapItem(parent)
 {
-   qDebug() << "XCellItem::XCellItem(QGraphicsItem *parent)";
+//   qDebug() << "XCellItem::XCellItem(QGraphicsItem *parent)";
    if(!isInitRes){
        QString prefix = ":/imgs/img30";
        QVector<QString> fileNames;
@@ -35,7 +35,7 @@ XCellItem::XCellItem(QGraphicsItem *parent)
        }
        isInitRes = true;
    }
-   qDebug() << "XCellItem::XCellItem(QGraphicsItem *parent)";
+//   qDebug() << "XCellItem::XCellItem(QGraphicsItem *parent)";
 }
 
 void XCellItem::reset()

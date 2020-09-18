@@ -11,14 +11,16 @@
 
 XMainWindow::XMainWindow()
 {
+
+    this->setFont(QFont("Microsoft YaHei"));
+
     setActions();
     setStatusBar();
     setMenu();
 
     m_scene = new XMinesScene(this);
-//    m_scene->setBackgroundBrush()
 
-    qDebug() << "创建场景成功";
+//    qDebug() << "创建场景成功";
     m_view = new XMinesView( m_scene, this );
     m_view->setCacheMode( QGraphicsView::CacheBackground );
     m_view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -37,7 +39,7 @@ XMainWindow::XMainWindow()
     connect(m_scene, &XMinesScene::minesCountChanged, this, &XMainWindow::onMinesCountChanged);
     connect(m_scene, &XMinesScene::gameOver, this, &XMainWindow::onGameOver);
 
-    qDebug() << "创建主窗口";
+//    qDebug() << "创建主窗口";
 
 //    this->onNewGame();
 }
@@ -69,13 +71,6 @@ void XMainWindow::onNewGame()
     }
     sizeFitoLevel();
     this->onMinesCountChanged(0);
-
-//    qDebug() << m_scene->fieldSize();
-//    this->resize(m_scene->fieldSize());
-//    m_view->resize(m_scene->fieldSize());
-//    centralWidget()->resize(m_scene->fieldSize());
-//    qDebug() << centralWidget()->size();
-//    qDebug() << this->size();
 }
 
 void XMainWindow::onGamePauseed(bool paused)
@@ -119,7 +114,6 @@ void XMainWindow::onGameOver(bool win)
 
 void XMainWindow::sizeFitoLevel()
 {
-    // 小窗口变大窗口，大窗口不会自动变成小窗口
     auto centralSize = centralWidget()->size();
     auto fieldSize = m_scene->fieldSize();
     if(centralSize.width() < fieldSize.width() || centralSize.height() < fieldSize.height()){
@@ -134,23 +128,32 @@ void XMainWindow::sizeFitoLevel()
 
 void XMainWindow::setMenu()
 {
-//    auto menubar = menuBar();
-//    QMenu* file = new QMenu("文件", this);
-//    file->addAction(m_newGameAction);
-//    menubar->addMenu(file);
+    auto menubar = this->menuBar();
+    auto m_about = new QMenu("帮助");
+    auto m_setting = new QMenu("设置");
+    auto m_file = new QMenu("文件");
+
+    menubar->addMenu(m_file);
+    menubar->addMenu(m_setting);
+    menubar->addMenu(m_about);
+
+    m_file->addAction(m_newGameAction);
+    auto m_exit = m_file->addAction("退出");
+    connect(m_exit, &QAction::triggered, [=](){
+        this->close();
+    });
+    m_exit->setIcon(QIcon(":/icons/icons/close.png"));
 }
 
 void XMainWindow::setActions()
 {
     m_newGameAction = new QAction(this);
-    m_newGameAction->setIcon(QIcon(":/icons/icons/new.jpg"));
+    m_newGameAction->setIcon(QIcon(":/icons/icons/add.png"));
     m_newGameAction->setIconText("新游戏");
     m_PauseAction = new QAction(this);
-    m_PauseAction->setIcon(QIcon(":/icons/icons/stop.jpg"));
+    m_PauseAction->setIcon(QIcon(":/icons/icons/stop.png"));
     m_PauseAction->setIconText("暂停");
-//    m_newGameAction->set
     QToolBar *toolbar = new QToolBar(this);
-//    toolbar->setFloatable(false);
     toolbar->setMovable(false);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar->addAction(m_newGameAction);
@@ -178,4 +181,37 @@ void XMainWindow::setStatusBar()
     statusBar()->setSizeGripEnabled(false);
     connect(m_levelCbx, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onDifficultyChanged);
 
+}
+
+void UI_XMainWindow::setupUI(QMainWindow *mw)
+{
+
+}
+
+void UI_XMainWindow::setupMenu(QMainWindow *mw)
+{
+
+}
+
+void UI_XMainWindow::setupStatus(QMainWindow *mw)
+{
+
+}
+
+void UI_XMainWindow::setupActions(QMainWindow *mw)
+{
+    m_statusBar = new QStatusBar(mw);
+    m_timeLabel = new QLabel(mw);
+    m_mineLabel = new QLabel(mw);
+    m_levelCbx  = new QComboBox(mw);
+
+    QStringList ranks;
+    ranks << "简单" << "中等" << "困难" << "自定义";
+    m_levelCbx->addItems(ranks);
+    m_mineLabel->setText("Mines: 0/0");
+    m_timeLabel->setText("Time: 00:00");
+    m_statusBar->insertPermanentWidget( 0, m_mineLabel );
+    m_statusBar->insertPermanentWidget( 1, m_timeLabel );
+    m_statusBar->insertPermanentWidget( 2, m_levelCbx );
+    m_statusBar->setSizeGripEnabled(false);
 }

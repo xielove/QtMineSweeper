@@ -13,6 +13,30 @@
 
 #include "commondef.h"
 
+class UI_XMainWindow{
+public:
+    QStatusBar *m_statusBar;
+    QMenuBar *m_menuBar;
+    QWidget *m_centralWidget;
+
+    QLabel *m_mineLabel;
+    QLabel *m_timeLabel;
+    QComboBox *m_levelCbx;
+    QAction* m_newGameAction;
+    QAction* m_pauseAction;
+    QAction* m_exitAction;
+    QAction* m_helpAction;
+    QAction* m_lowLvelAction;
+    QAction* m_midLvelAction;
+    QAction* m_highLvelAction;
+
+public:
+    void setupUI(QMainWindow *mainWindow);
+    void setupMenu(QMainWindow *mainWindow);
+    void setupStatus(QMainWindow *mainWindow);
+    void setupActions(QMainWindow *mainWindow);
+};
+
 class XMainWindow : public QMainWindow
 {
     Q_OBJECT

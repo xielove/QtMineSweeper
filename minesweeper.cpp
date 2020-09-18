@@ -6,7 +6,7 @@ const int defaultPixmapSize = 30;
 
 bool MineSweeper::checkWin()
 {
-    qDebug() << "m_unRevealed = " << m_unRevealed;
+//    qDebug() << "m_unRevealed = " << m_unRevealed;
     if(m_unRevealed == m_fieldItem->minesCount()){
         return true;
     }
@@ -116,17 +116,17 @@ void XMineSweeper::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev)
 void XMineSweeper::mouseMoveEvent(QGraphicsSceneMouseEvent *ev)
 {
     Q_UNUSED(ev);
-    qDebug() << "mouseMoveEvent" ;
+//    qDebug() << "mouseMoveEvent" ;
 //    QGraphicsObject::mouseMoveEvent(ev);
 }
 
 XMineSweeper::XMineSweeper(/* args */)
     :m_cellSize(defaultPixmapSize)
 {
-    qDebug() << "构造XMineSweeper" ;
+//    qDebug() << "构造XMineSweeper" ;
     m_fieldItem = new FieldItem();
     m_fieldAction = new FieldAction(m_fieldItem);
-    qDebug() << "成功构造XMineSweeper" ;
+//    qDebug() << "成功构造XMineSweeper" ;
 }
 
 XMineSweeper::~XMineSweeper()
@@ -137,7 +137,7 @@ XMineSweeper::~XMineSweeper()
 
 void XMineSweeper::initField(FieldArgs args)
 {
-    qDebug("void XMineSweeper::initField(FieldArgs args)");
+//    qDebug("void XMineSweeper::initField(FieldArgs args)");
     m_fieldAction->setFieldArgs(args);
     int cellsCount = m_fieldItem->cellItemsCount();
     m_unRevealed = cellsCount;
@@ -153,7 +153,7 @@ void XMineSweeper::initField(FieldArgs args)
     qDebug("reset all cells");
     m_fieldAction->resetAllCells();
     adjustCellPos();
-    qDebug("void XMineSweeper::initField(FieldArgs args)");
+//    qDebug("void XMineSweeper::initField(FieldArgs args)");
 }
 
 void XMineSweeper::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt, QWidget *widget)
@@ -174,7 +174,7 @@ void XMineSweeper::adjustCellPos()
 //    qDebug() << "重新排列方格位置" ;
 //    qDebug() << "m_rowsCount = " << m_rowsCount;
 //    qDebug() << "m_colsCount = " << m_colsCount;
-    qDebug() << "void XFieldItem::adjustCellPos()" ;
+//    qDebug() << "void XFieldItem::adjustCellPos()" ;
     for(int row = 0; row < m_fieldItem->rowsCount(); ++row)
         for(int col=0; col < m_fieldItem->colsCount(); ++col)
         {
@@ -182,13 +182,13 @@ void XMineSweeper::adjustCellPos()
             it->setPos(col*cellSize(), row*cellSize());
         }
 //    qDebug() << "确定雷区方格位置成功" ;
-    qDebug() << "void XFieldItem::adjustCellPos()" ;
+//    qDebug() << "void XFieldItem::adjustCellPos()" ;
 
 }
 
 void XMineSweeper::revealItem(FieldPos pos)
 {
-    qDebug("void XMineSweeper::revealItem(FieldPos pos)");
+//    qDebug("void XMineSweeper::revealItem(FieldPos pos)");
     if(isGameOver()){
         return;
     }
@@ -198,10 +198,8 @@ void XMineSweeper::revealItem(FieldPos pos)
     }else if(this->isLose()){
         emit gameOver(false);
     }
-        qDebug("void XMineSweeper::revealItem(FieldPos pos)");
+//        qDebug("void XMineSweeper::revealItem(FieldPos pos)");
 }
-
-
 
 void XMineSweeper::markItem(FieldPos pos)
 {
@@ -214,10 +212,10 @@ void XMineSweeper::markItem(FieldPos pos)
 
 void XMineSweeper::startNewGame(FieldArgs args)
 {
-    qDebug() << "void XMineSweeper::startNewGame(FieldArgs args)";
+//    qDebug() << "void XMineSweeper::startNewGame(FieldArgs args)";
     m_gameOver = false;
     m_win = false;
     m_firstClick = true;
     initField(args);
-    qDebug() << "void XMineSweeper::startNewGame(FieldArgs args)";
+//    qDebug() << "void XMineSweeper::startNewGame(FieldArgs args)";
 }

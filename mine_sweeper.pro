@@ -17,11 +17,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     cellitem.cpp \
+    commondef.cpp \
     fielditem.cpp \
     main.cpp \
     mainwindow.cpp \
     minesweeper.cpp \
     scene.cpp \
+    settingdialog.cpp \
     xcellitem.cpp
 
 HEADERS += \
@@ -31,10 +33,12 @@ HEADERS += \
     mainwindow.h \
     minesweeper.h\
     scene.h \
+    settingdialog.h \
     xcellitem.h
 
 FORMS += \
-#    mainwindow.ui
+ \#    mainwindow.ui
+    settingdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

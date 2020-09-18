@@ -28,7 +28,7 @@ XMinesScene::XMinesScene(QObject *parent)
     int w = m_mineSweeper->boundingRect().width();
     int h = m_mineSweeper->boundingRect().height();
     resizeScene(w, h);
-    qDebug() << "成功创建场景类";
+//    qDebug() << "成功创建场景类";
 }
 
 void XMinesScene::resizeScene(int width, int height)
@@ -36,9 +36,6 @@ void XMinesScene::resizeScene(int width, int height)
     setSceneRect(0, 0, width, height);
     centerField();
     updateBackground();
-//    m_mineSweeper->resizeToFitInRect( sceneRect() );
-    // 要求雷区始终保持在场景中央
-
 }
 
 
@@ -52,20 +49,12 @@ void XMinesScene::startNewGame(FieldArgs args)
 void XMinesScene::setGamePaused(bool paused)
 {
     m_mineSweeper->setVisible(!paused);
-//    m_stoping->setVisible(paused);
-//    if(paused){
-
-//        addItem(m_stoping);
-//    }else{
-//        this->removeItem(m_stoping);
-//    }
 }
 
 QSize XMinesScene::fieldSize()
 {
     auto rect = m_mineSweeper->boundingRect();
     QSize size(rect.width(), rect.height());
-//    return m_mineSweeper->boundingRect();
     return size;
 }
 
@@ -103,7 +92,5 @@ XMinesView::XMinesView(XMinesScene *scene, QWidget *parent)
 
 void XMinesView::resizeEvent(QResizeEvent *ev)
 {
-//    qDebug() << ev->size();
-//    qDebug() << "resizeEvent" << endl;
     m_scene->resizeScene(ev->size().width(), ev->size().height());
 }

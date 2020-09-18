@@ -28,6 +28,7 @@ public:
     // 在子类中实现代码
     virtual void initField(FieldArgs args) = 0;
     virtual void startNewGame(FieldArgs args) = 0;
+
     virtual void revealItem(FieldPos pos);
     virtual void markItem(FieldPos pos);
 
@@ -63,7 +64,7 @@ public:
 
     int cellSize() const { return m_cellSize; }
 
-    // 必须要重写这两个虚函数
+    // 必须要重写这两个虚函数，继承QGraphicsObject
     void paint( QPainter * painter, const QStyleOptionGraphicsItem*, QWidget * widget = nullptr ) override;
     QRectF boundingRect() const override;
 };
