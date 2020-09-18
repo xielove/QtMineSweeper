@@ -18,22 +18,23 @@ private:
     std::vector<CellItem *> m_cellitems;
     std::vector<int> m_randomPos;
 
+    int transToIndex(int row, int col);
+    int transToIndex(FieldPos pos);
+
+    std::list<CellItem*> neighbors(FieldPos pos);
+    std::list<FieldPos>  neighborsPos(FieldPos pos);
+
 public:
     inline int colsCount() const {return m_args.rows;}
     inline int rowsCount() const {return m_args.cols;}
     inline int minesCount() const {return m_args.mines;}
-    inline FieldArgs fieldArgs() const{return m_args;}
+    inline FieldArgs fieldArgs() const {return m_args;}
     inline int cellItemsCount() const {return colsCount()*rowsCount();}
 
     FieldPos itemPos(CellItem *item);
     CellItem *itemAt(int row, int col);
     CellItem *itemAt(FieldPos pos);
 
-    int transToIndex(int row, int col);
-    int transToIndex(FieldPos pos);
-
-    std::list<CellItem*> neighbors(FieldPos pos);
-    std::list<FieldPos>  neighborsPos(FieldPos pos);
 };
 
 class FieldAction
@@ -58,6 +59,4 @@ public:
     }
     void clearField();
 };
-
-
 #endif /* MINEFIELD_H */

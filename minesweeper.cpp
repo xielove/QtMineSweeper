@@ -14,7 +14,7 @@ bool MineSweeper::checkWin()
 }
 void MineSweeper::revealItem(FieldPos pos)
 {
-        qDebug("void MineSweeper::revealItem(FieldPos pos)");
+//        qDebug("void MineSweeper::revealItem(FieldPos pos)");
     if(isGameOver()){
         return;
     }
@@ -44,7 +44,7 @@ void MineSweeper::revealItem(FieldPos pos)
         m_win = true;
         m_fieldAction->markAllMines();
     }
-        qDebug("void MineSweeper::revealItem(FieldPos pos)");
+//        qDebug("void MineSweeper::revealItem(FieldPos pos)");
 }
 
 void MineSweeper::markItem(FieldPos pos)

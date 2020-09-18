@@ -6,28 +6,34 @@
 class CellItem
 {
 private:
-    XMinesState::CellDisplay m_display = XMinesState::Init;
+    MinesState::CellDisplay m_display = MinesState::Init;
     bool m_hasMine = false;
     int m_digit = 0;
 public:
     // getter and setter
-    inline bool hasMine(){return m_hasMine;}
-    inline int dight(){return m_digit;}
+    inline bool hasMine() const {return m_hasMine;}
+    inline int dight() const {return m_digit;}
+    inline MinesState::CellDisplay display(){return m_display;}
+
+    // 是否是初始状态
+    inline bool isInitialed() const {
+        return m_display == MinesState::Init;
+    }
+    // 是否探测该方格
+    inline bool isRevealed() const {
+        return m_display >= MinesState::Zero && m_display <= MinesState::Explode;
+    }
+    // 是否使用旗子标记
+    inline bool isFlagged() const {
+        return m_display == MinesState::Flag;
+    }
+    // 是否使用问好标记
+    inline bool isQuestioned() const {
+        return m_display == MinesState::Question;
+    }
+
     inline void setHasMine(bool hasMine){this->m_hasMine = hasMine;}
     inline void setDight(int d){this->m_digit = d;}
-    inline int display(){return m_display;}
-    inline bool isInitialed(){
-        return m_display == XMinesState::Init;
-    }
-    inline bool isRevealed(){
-        return m_display >= XMinesState::Zero && m_display <= XMinesState::Explode;
-    }
-    inline bool isFlagged(){
-        return m_display == XMinesState::Flag;
-    }
-    inline bool isQuestioned(){
-        return m_display == XMinesState::Question;
-    }
 
 public:
     CellItem();
@@ -35,12 +41,10 @@ public:
     virtual void reset();
     // 标记区域
     virtual void mark();
-    void virtual forceMark();
-    void virtual forceReveal();
+    virtual void forceMark();
     // 探测区域
+    virtual void forceReveal();
     virtual void reveal();
-    // 模板方法：将一部分动作延迟到子类实现
-    virtual void updateDisplay() = 0;
 };
 
 #endif /* CELLITEM_H */

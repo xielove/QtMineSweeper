@@ -9,10 +9,6 @@ XCellItem::~XCellItem()
 
 }
 
-void XCellItem::updateDisplay()
-{
-    this->setPixmap(pixs[display()]);
-}
 
 XCellItem::XCellItem(QGraphicsItem *parent)
    :QGraphicsPixmapItem(parent)
@@ -34,11 +30,42 @@ XCellItem::XCellItem(QGraphicsItem *parent)
        fileNames.append("initial.png");    // 10
        fileNames.append("question.png");   // 11
        fileNames.append("flag.png");       // 12
-       for(int i = XMinesState::Zero; i <= XMinesState::Flag; i++){
+       for(int i = MinesState::Zero; i <= MinesState::Flag; i++){
            pixs.push_back(QPixmap(prefix+"/"+fileNames[i]));
        }
        isInitRes = true;
    }
-//   reset();
    qDebug() << "XCellItem::XCellItem(QGraphicsItem *parent)";
+}
+
+void XCellItem::reset()
+{
+    CellItem::reset();
+    updateDisplay();
+}
+void XCellItem::mark()
+{
+    CellItem::mark();
+    updateDisplay();
+}
+void XCellItem::forceMark()
+{
+    CellItem::forceMark();
+    updateDisplay();
+}
+
+void XCellItem::forceReveal()
+{
+    CellItem::forceReveal();
+    updateDisplay();
+}
+void XCellItem::reveal()
+{
+    CellItem::reveal();
+    updateDisplay();
+}
+
+void XCellItem::updateDisplay()
+{
+    this->setPixmap(pixs[display()]);
 }

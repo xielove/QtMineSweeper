@@ -16,7 +16,7 @@ struct FieldArgs
     static const FieldArgs High;
 };
 
-namespace XMinesState
+namespace MinesState
 {
     enum CellState {Initial, Opened, Flagged};
     enum CellDisplay{
