@@ -11,12 +11,13 @@
 #include <QTimer>
 #include "scene.h"
 
-#include "commondef.h"
+#include "appresource.h"
 
 class UI_XMainWindow{
 public:
     QStatusBar *m_statusBar;
     QMenuBar *m_menuBar;
+    QToolBar *m_toolBar;
     QWidget *m_centralWidget;
 
     QLabel *m_mineLabel;
@@ -26,15 +27,11 @@ public:
     QAction* m_pauseAction;
     QAction* m_exitAction;
     QAction* m_helpAction;
-    QAction* m_lowLvelAction;
-    QAction* m_midLvelAction;
-    QAction* m_highLvelAction;
+    QAction* m_aboutAction;
+    QList<QAction* > levelAction;
 
 public:
     void setupUI(QMainWindow *mainWindow);
-    void setupMenu(QMainWindow *mainWindow);
-    void setupStatus(QMainWindow *mainWindow);
-    void setupActions(QMainWindow *mainWindow);
 };
 
 class XMainWindow : public QMainWindow

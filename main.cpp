@@ -2,13 +2,15 @@
 
 #include <QApplication>
 #include <QDebug>
+#include "appresource.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qDebug() << "hello, world" << endl;
+    AppResource::initAppRes();
 
     XMainWindow w;
     w.show();
+
     return a.exec();
 }

@@ -16,8 +16,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    appresource.cpp \
     cellitem.cpp \
-    commondef.cpp \
     fielditem.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -27,8 +27,8 @@ SOURCES += \
     xcellitem.cpp
 
 HEADERS += \
+    appresource.h \
     cellitem.h \
-    commondef.h \
     fielditem.h \
     mainwindow.h \
     minesweeper.h\

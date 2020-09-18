@@ -31,7 +31,7 @@ XMainWindow::XMainWindow()
     m_timer->start(1000);
     onMinesCountChanged(0);
 
-    setWindowIcon(QIcon(":/icons/icons/logo.png"));
+    setWindowIcon(QIcon(":/res/icons/logo.png"));
     setWindowTitle("扫雷");
     setCentralWidget(m_view);
 
@@ -142,28 +142,30 @@ void XMainWindow::setMenu()
     connect(m_exit, &QAction::triggered, [=](){
         this->close();
     });
-    m_exit->setIcon(QIcon(":/icons/icons/close.png"));
+    m_exit->setIcon(AppResource::exitIcon);
 }
 
 void XMainWindow::setActions()
 {
     m_newGameAction = new QAction(this);
-    m_newGameAction->setIcon(QIcon(":/icons/icons/add.png"));
+    m_newGameAction->setIcon(QIcon(":/res/icons/add.png"));
     m_newGameAction->setIconText("新游戏");
     m_PauseAction = new QAction(this);
-    m_PauseAction->setIcon(QIcon(":/icons/icons/stop.png"));
+    m_PauseAction->setIcon(QIcon(":/res/icons/stop.png"));
     m_PauseAction->setIconText("暂停");
     QToolBar *toolbar = new QToolBar(this);
-    toolbar->setMovable(false);
+
     toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar->addAction(m_newGameAction);
     toolbar->addAction(m_PauseAction);
     this->addToolBar(Qt::TopToolBarArea, toolbar);
+    toolbar->setMovable(false);
     m_PauseAction->setCheckable(true);
     connect(m_newGameAction, &QAction::triggered, this, &XMainWindow::onNewGame);
     connect(m_PauseAction, &QAction::toggled, this, &XMainWindow::onGamePauseed);
 }
 
+#include <QSpacerItem>
 void XMainWindow::setStatusBar()
 {
 //    m_status = new QStatusBar(this);
@@ -175,9 +177,14 @@ void XMainWindow::setStatusBar()
     m_levelCbx->addItems(ranks);
     m_mineLabel->setText("Mines: 0/0");
     m_timeLabel->setText("Time: 00:00");
-    statusBar()->insertPermanentWidget( 0, m_mineLabel );
-    statusBar()->insertPermanentWidget( 1, m_timeLabel );
-    statusBar()->insertPermanentWidget( 2, m_levelCbx );
+//    statusBar()->insertPermanentWidget( 0, m_mineLabel );
+//    statusBar()->insertPermanentWidget( 1, m_timeLabel );
+//    statusBar()->insertPermanentWidget( 2, m_levelCbx );
+//    QSpacerItem sp(20, statusBar()->height());
+
+    statusBar()->addWidget(m_timeLabel);
+    statusBar()->addPermanentWidget(m_mineLabel);
+    statusBar()->addPermanentWidget(m_levelCbx);
     statusBar()->setSizeGripEnabled(false);
     connect(m_levelCbx, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onDifficultyChanged);
 
@@ -185,33 +192,49 @@ void XMainWindow::setStatusBar()
 
 void UI_XMainWindow::setupUI(QMainWindow *mw)
 {
-
-}
-
-void UI_XMainWindow::setupMenu(QMainWindow *mw)
-{
-
-}
-
-void UI_XMainWindow::setupStatus(QMainWindow *mw)
-{
-
-}
-
-void UI_XMainWindow::setupActions(QMainWindow *mw)
-{
+    // 状态栏设置
     m_statusBar = new QStatusBar(mw);
-    m_timeLabel = new QLabel(mw);
-    m_mineLabel = new QLabel(mw);
-    m_levelCbx  = new QComboBox(mw);
+    m_timeLabel = new QLabel(m_statusBar);
+    m_mineLabel = new QLabel(m_statusBar);
+    m_levelCbx  = new QComboBox(m_statusBar);
 
-    QStringList ranks;
-    ranks << "简单" << "中等" << "困难" << "自定义";
-    m_levelCbx->addItems(ranks);
+    m_levelCbx->addItems(AppResource::levels);
     m_mineLabel->setText("Mines: 0/0");
     m_timeLabel->setText("Time: 00:00");
-    m_statusBar->insertPermanentWidget( 0, m_mineLabel );
-    m_statusBar->insertPermanentWidget( 1, m_timeLabel );
-    m_statusBar->insertPermanentWidget( 2, m_levelCbx );
+
+    m_statusBar->addWidget(m_timeLabel );
+    m_statusBar->addPermanentWidget(m_mineLabel );
+    m_statusBar->addPermanentWidget(m_levelCbx );
     m_statusBar->setSizeGripEnabled(false);
+
+    // 工具栏设置
+    m_toolBar = new QToolBar(mw);
+    m_newGameAction = new QAction(AppResource::newIcon, "新游戏", mw);
+    m_pauseAction   = new QAction(AppResource::stopIcon, "暂停", mw);
+    m_toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    m_toolBar->addAction(m_newGameAction);
+    m_toolBar->addAction(m_pauseAction);
+    m_toolBar->setMovable(false);
+    m_pauseAction->setCheckable(true);
+
+    // 菜单栏设置
+    m_menuBar = new QMenuBar(mw);
+    auto file = m_menuBar->addMenu("文件");
+    auto setting = m_menuBar->addMenu("设置");
+    auto help = m_menuBar->addMenu("帮助");
+
+    file->addAction(m_newGameAction);
+    file->addSeparator();
+    file->addAction(m_exitAction);
+
+    for(int i = 0; i < AppResource::levelsCount; i++){
+        levelAction.append(new QAction(AppResource::levels[i], mw));
+        levelAction[i]->setCheckable(true);
+    }
+    setting->addActions(levelAction);
+
+    m_helpAction  = new QAction("帮助", help);
+    m_aboutAction = new QAction("关于", help);
+    help->addAction(m_helpAction);
+    help->addAction(m_aboutAction);
 }

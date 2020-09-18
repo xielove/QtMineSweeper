@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/imgs">
+    <qresource prefix="/res">
         <file>img30/1.png</file>
         <file>img30/2.png</file>
         <file>img30/3.png</file>
@@ -14,14 +14,12 @@
         <file>img30/initial.png</file>
         <file>img30/question.png</file>
         <file>stoping.jpg</file>
-    </qresource>
-    <qresource prefix="/icons">
+        <file>icons/add.png</file>
         <file>icons/continue.jpg</file>
+        <file>icons/logo.png</file>
         <file>icons/new.jpg</file>
         <file>icons/stop.jpg</file>
-        <file>icons/logo.png</file>
-        <file>icons/add.png</file>
-        <file>icons/close.png</file>
         <file>icons/stop.png</file>
+        <file>icons/exit.png</file>
     </qresource>
 </RCC>

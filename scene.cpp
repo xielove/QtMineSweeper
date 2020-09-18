@@ -10,7 +10,7 @@ XMinesScene::XMinesScene(QObject *parent)
 //    qDebug() << "创建雷区，并添加到场景中";
     setItemIndexMethod( NoIndex );
     m_stoping = new QGraphicsPixmapItem();
-    m_stoping->setPixmap(QPixmap(":/imgs/stoping.jpg"));
+    m_stoping->setPixmap(QPixmap(":/res/stoping.jpg"));
     addItem(m_stoping);
 
     m_mineSweeper = new XMineSweeper();

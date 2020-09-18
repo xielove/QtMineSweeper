@@ -1,6 +1,6 @@
 #include "minesweeper.h"
 #include "QDebug"
-#include "commondef.h"
+#include "appresource.h"
 #include <QGraphicsSceneMouseEvent>
 const int defaultPixmapSize = 30;
 

@@ -1,35 +1,36 @@
 #ifndef CELLITEM_H
 #define CELLITEM_H
 
-#include "commondef.h"
+//#include "commondef.h"
+#include "appresource.h"
 
 class CellItem
 {
 private:
-    MinesState::CellDisplay m_display = MinesState::Init;
+    CellDisplay m_display = CellDisplay::Init;
     bool m_hasMine = false;
     int m_digit = 0;
 public:
     // getter and setter
     inline bool hasMine() const {return m_hasMine;}
     inline int dight() const {return m_digit;}
-    inline MinesState::CellDisplay display(){return m_display;}
+    inline CellDisplay display(){return m_display;}
 
     // 是否是初始状态
     inline bool isInitialed() const {
-        return m_display == MinesState::Init;
+        return m_display == CellDisplay::Init;
     }
     // 是否探测该方格
     inline bool isRevealed() const {
-        return m_display >= MinesState::Zero && m_display <= MinesState::Explode;
+        return m_display >= CellDisplay::Zero && m_display <= CellDisplay::Explode;
     }
     // 是否使用旗子标记
     inline bool isFlagged() const {
-        return m_display == MinesState::Flag;
+        return m_display == CellDisplay::Flag;
     }
     // 是否使用问好标记
     inline bool isQuestioned() const {
-        return m_display == MinesState::Question;
+        return m_display == CellDisplay::Question;
     }
 
     inline void setHasMine(bool hasMine){this->m_hasMine = hasMine;}

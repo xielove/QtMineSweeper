@@ -7,8 +7,8 @@
 #include <QGraphicsObject>
 
 #include "cellitem.h"
-#include "commondef.h"
 #include "fielditem.h"
+#include "appresource.h"
 
 class MineSweeper
 {

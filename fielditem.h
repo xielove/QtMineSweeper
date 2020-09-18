@@ -1,14 +1,10 @@
 #ifndef MINEFIELD_H
 #define MINEFIELD_H
 
-#include <utility>
 #include <vector>
-#include <list>
-#include <QGraphicsObject>
-
 #include "cellitem.h"
 #include "xcellitem.h"
-#include "commondef.h"
+#include "appresource.h"
 
 class FieldItem
 {

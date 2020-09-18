@@ -1,7 +1,5 @@
-#include <cstddef>
 #include <cstdlib>
-#include <cstdio>
-#include <time.h>
+#include <ctime>
 #include <utility>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
