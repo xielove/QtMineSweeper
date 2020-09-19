@@ -8,74 +8,108 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QMenuBar>
+#include <QActionGroup>
+#include <QLayout>
 
 XMainWindow::XMainWindow()
 {
+    ui = new UI_XMainWindow();
+    ui->setupUI(this);
 
-    this->setFont(QFont("Microsoft YaHei"));
+    m_setting = new SettingDialog(this);
 
-    setActions();
-    setStatusBar();
-    setMenu();
+    m_timer = new QTimer(this);
+    m_timer->setInterval(1000);
 
     m_scene = new XMinesScene(this);
-
-//    qDebug() << "创建场景成功";
     m_view = new XMinesView( m_scene, this );
     m_view->setCacheMode( QGraphicsView::CacheBackground );
     m_view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setFrameStyle(QFrame::NoFrame);
-
-    m_timer = new QTimer(this);
-    m_timer->start(1000);
-    onMinesCountChanged(0);
-
-    setWindowIcon(QIcon(":/res/icons/logo.png"));
-    setWindowTitle("扫雷");
     setCentralWidget(m_view);
 
+    setConnections();
+    onNewGame();
+}
+
+// Qt中QObject的子类对象，按照对象树析构
+XMainWindow::~XMainWindow()
+{
+    delete ui;
+}
+
+void XMainWindow::setConnections()
+{
     connect(m_timer, &QTimer::timeout, this, &XMainWindow::advanceTime);
     connect(m_scene, &XMinesScene::minesCountChanged, this, &XMainWindow::onMinesCountChanged);
     connect(m_scene, &XMinesScene::gameOver, this, &XMainWindow::onGameOver);
 
-//    qDebug() << "创建主窗口";
-
-//    this->onNewGame();
+    connect(ui->m_newGameAction, &QAction::triggered, this, &XMainWindow::onNewGame);
+    connect(ui->m_exitAction, &QAction::triggered, this, &XMainWindow::close);
+    connect(ui->m_pauseAction, &QAction::toggled, this, &XMainWindow::onGamePauseed);
+    connect(ui->m_levelCbx, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onLevelChanged);
+    connect(ui->actionGroup, &QActionGroup::triggered, this, &XMainWindow::onActGroupTriggerd);
 }
 
-void XMainWindow::onNewGame()
+void XMainWindow::updateChecked()
 {
-    m_timer->stop();
-    this->m_recordTime = 0;
-    advanceTime();
-    onMinesCountChanged(0);
-    m_timer->start();
+    auto newact = ui->levelAction[m_level];
+    auto newindex = ui->m_levelCbx;
+    if(!newact->isChecked())
+        ui->levelAction[m_level]->setChecked(true);
+    if(newindex->currentIndex() != m_level)
+        ui->m_levelCbx->setCurrentIndex(m_level);
+}
 
-    if( m_PauseAction->isChecked() )
-    {
-            m_scene->setGamePaused(false);
-            m_PauseAction->setChecked(false);
-    }
-//    qDebug() << "新建一个游戏";
+bool XMainWindow::onNewGame()
+{
+    qDebug() << "m_level = " << m_level;
+    m_timer->stop();
     switch (m_level) {
         case 0:
-            m_scene->startNewGame(FieldArgs::Low);
+            m_scene->startNewGame(AppResource::Low);
         break;
         case 1:
-            m_scene->startNewGame(FieldArgs::Medium);
+            m_scene->startNewGame(AppResource::Medium);
         break;
         case 2:
-            m_scene->startNewGame(FieldArgs::High);
+            m_scene->startNewGame(AppResource::High);
+        break;
+        case 3:
+            m_setting->exec();
+            if(m_setting->Success()){
+                qDebug() << m_setting->Success();
+                m_scene->startNewGame(m_setting->getArgs());
+            }else{
+                m_timer->start();
+                return false;
+            }
         break;
     }
+
+    qDebug() << "创建了一个新游戏";
+
+    if( ui->m_pauseAction->isChecked() )
+    {
+        m_scene->setGamePaused(false);
+        ui->m_pauseAction->setChecked(false);
+    }
+    m_recordTime = 0;
+    advanceTime();
+    m_timer->start();
+    onMinesCountChanged(0);
     sizeFitoLevel();
-    this->onMinesCountChanged(0);
+
+    // 更新难度选择器的当前选项
+    updateChecked();
+    return true;
 }
 
 void XMainWindow::onGamePauseed(bool paused)
 {
     m_scene->setGamePaused(paused);
+    // 游戏结束时，确保游戏时间不会改变
     if(m_scene->isGameOver()){
         return;
     }
@@ -85,16 +119,33 @@ void XMainWindow::onGamePauseed(bool paused)
         m_timer->start();
 }
 
-void XMainWindow::onDifficultyChanged(int index)
+void XMainWindow::onActGroupTriggerd(QAction * act)
 {
+    if(act2level.size() == 0){
+        for(int i = 0; i < ui->levelAction.size(); i++){
+            act2level.insert(ui->levelAction[i], i);
+        }
+    }
+    onLevelChanged((act2level[act]));
+}
+
+void XMainWindow::onLevelChanged(int index)
+{
+    if(m_level == index){
+        return ;
+    }
+    int oldlevel = m_level;
     this->m_level = index;
-    qDebug() << m_level;
-    onNewGame();
+    if(!onNewGame()){
+        qDebug() << "取消自定义";
+        m_level = oldlevel;
+        updateChecked();
+    }
 }
 
 void XMainWindow::onMinesCountChanged(int mines)
 {
-    m_mineLabel->setText(QString("Mines: %1/%2").arg(mines).arg(m_scene->totalMines()));
+    ui->m_mineLabel->setText(QString("Mines: %1/%2").arg(mines).arg(m_scene->totalMines()));
 }
 
 void XMainWindow::advanceTime()
@@ -103,7 +154,7 @@ void XMainWindow::advanceTime()
     int second = m_recordTime % 60;
     int minute = m_recordTime / 60;
     QString timeStr = "Time: %1:%2";
-    m_timeLabel->setText(timeStr.arg(minute, 2, 10, QChar('0')).arg(second, 2, 10, QChar('0')));
+    ui->m_timeLabel->setText(timeStr.arg(minute, 2, 10, QChar('0')).arg(second, 2, 10, QChar('0')));
 }
 
 void XMainWindow::onGameOver(bool win)
@@ -114,84 +165,36 @@ void XMainWindow::onGameOver(bool win)
 
 void XMainWindow::sizeFitoLevel()
 {
-    auto centralSize = centralWidget()->size();
-    auto fieldSize = m_scene->fieldSize();
-    if(centralSize.width() < fieldSize.width() || centralSize.height() < fieldSize.height()){
-        int hborder = this->size().height()-centralWidget()->size().height();
-        int wborder = this->size().width()-centralWidget()->size().width();
-        int h = hborder + m_scene->fieldSize().height();
-        int w = wborder + m_scene->fieldSize().width();
-        this->resize(w, h);
-    }
+    int h = AppResource::vborder + m_scene->fieldSize().height();
+    int w = AppResource::hborder + m_scene->fieldSize().width();
+    this->resize(w, h);
     m_scene->centerField();
-}
-
-void XMainWindow::setMenu()
-{
-    auto menubar = this->menuBar();
-    auto m_about = new QMenu("帮助");
-    auto m_setting = new QMenu("设置");
-    auto m_file = new QMenu("文件");
-
-    menubar->addMenu(m_file);
-    menubar->addMenu(m_setting);
-    menubar->addMenu(m_about);
-
-    m_file->addAction(m_newGameAction);
-    auto m_exit = m_file->addAction("退出");
-    connect(m_exit, &QAction::triggered, [=](){
-        this->close();
-    });
-    m_exit->setIcon(AppResource::exitIcon);
-}
-
-void XMainWindow::setActions()
-{
-    m_newGameAction = new QAction(this);
-    m_newGameAction->setIcon(QIcon(":/res/icons/add.png"));
-    m_newGameAction->setIconText("新游戏");
-    m_PauseAction = new QAction(this);
-    m_PauseAction->setIcon(QIcon(":/res/icons/stop.png"));
-    m_PauseAction->setIconText("暂停");
-    QToolBar *toolbar = new QToolBar(this);
-
-    toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    toolbar->addAction(m_newGameAction);
-    toolbar->addAction(m_PauseAction);
-    this->addToolBar(Qt::TopToolBarArea, toolbar);
-    toolbar->setMovable(false);
-    m_PauseAction->setCheckable(true);
-    connect(m_newGameAction, &QAction::triggered, this, &XMainWindow::onNewGame);
-    connect(m_PauseAction, &QAction::toggled, this, &XMainWindow::onGamePauseed);
-}
-
-#include <QSpacerItem>
-void XMainWindow::setStatusBar()
-{
-//    m_status = new QStatusBar(this);
-    m_timeLabel = new QLabel();
-    m_mineLabel = new QLabel();
-    m_levelCbx = new QComboBox();
-    QStringList ranks;
-    ranks << "简单" << "中等" << "困难" << "自定义";
-    m_levelCbx->addItems(ranks);
-    m_mineLabel->setText("Mines: 0/0");
-    m_timeLabel->setText("Time: 00:00");
-//    statusBar()->insertPermanentWidget( 0, m_mineLabel );
-//    statusBar()->insertPermanentWidget( 1, m_timeLabel );
-//    statusBar()->insertPermanentWidget( 2, m_levelCbx );
-//    QSpacerItem sp(20, statusBar()->height());
-
-    statusBar()->addWidget(m_timeLabel);
-    statusBar()->addPermanentWidget(m_mineLabel);
-    statusBar()->addPermanentWidget(m_levelCbx);
-    statusBar()->setSizeGripEnabled(false);
-    connect(m_levelCbx, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onDifficultyChanged);
-
 }
 
 void UI_XMainWindow::setupUI(QMainWindow *mw)
 {
+//    mw->resize(AppResource::defaultSceneSize);
+    // 初始化窗口
+    mw->setFont(QFont("Microsoft YaHei"));
+    mw->setWindowIcon(AppResource::logo);
+    mw->setWindowTitle("扫雷");
+
+
+    // 初始化Action
+    m_newGameAction = new QAction(AppResource::newIcon, "新游戏", mw);
+    m_pauseAction   = new QAction(AppResource::stopIcon, "暂停", mw);
+    m_pauseAction->setCheckable(true);
+    m_exitAction = new QAction(AppResource::exitIcon, "退出", mw);
+    m_helpAction  = new QAction("帮助", mw);
+    m_aboutAction = new QAction("关于", mw);
+    actionGroup = new QActionGroup(mw);
+    for(int i = 0; i < AppResource::levelsCount; i++){
+        levelAction.append(new QAction(AppResource::levels[i], mw));
+        levelAction[i]->setCheckable(true);
+        actionGroup->addAction(levelAction[i]);
+    }
+    levelAction[0]->setChecked(true);
+
     // 状态栏设置
     m_statusBar = new QStatusBar(mw);
     m_timeLabel = new QLabel(m_statusBar);
@@ -209,8 +212,7 @@ void UI_XMainWindow::setupUI(QMainWindow *mw)
 
     // 工具栏设置
     m_toolBar = new QToolBar(mw);
-    m_newGameAction = new QAction(AppResource::newIcon, "新游戏", mw);
-    m_pauseAction   = new QAction(AppResource::stopIcon, "暂停", mw);
+
     m_toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_toolBar->addAction(m_newGameAction);
     m_toolBar->addAction(m_pauseAction);
@@ -226,15 +228,13 @@ void UI_XMainWindow::setupUI(QMainWindow *mw)
     file->addAction(m_newGameAction);
     file->addSeparator();
     file->addAction(m_exitAction);
-
-    for(int i = 0; i < AppResource::levelsCount; i++){
-        levelAction.append(new QAction(AppResource::levels[i], mw));
-        levelAction[i]->setCheckable(true);
-    }
     setting->addActions(levelAction);
-
-    m_helpAction  = new QAction("帮助", help);
-    m_aboutAction = new QAction("关于", help);
     help->addAction(m_helpAction);
     help->addAction(m_aboutAction);
+
+    // 添加到主窗口
+    mw->setStatusBar(m_statusBar);
+    mw->addToolBar(m_toolBar);
+    mw->setMenuBar(m_menuBar);
+    mw->show();
 }

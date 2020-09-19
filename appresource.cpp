@@ -12,6 +12,16 @@ QIcon AppResource::exitIcon;
 //QPixmap AppResource::background;
 int AppResource::levelsCount;
 
+const FieldArgs AppResource::Low{9, 9, 10};
+const FieldArgs AppResource::Medium{16, 16, 40};
+const FieldArgs AppResource::High{30, 16, 99};
+
+const int AppResource::defaultPixmapSize = 30;
+QSize AppResource::defaultSceneSize;
+
+const int AppResource::hborder = 0;
+const int AppResource::vborder = 85;
+
 void AppResource::initAppRes()
 {
     levels << "简单" << "中等" << "困难" << "自定义";
@@ -31,5 +41,7 @@ void AppResource::initAppRes()
     stopIcon = QIcon(iconPrefix + "/" + "stop.png");
     newIcon = QIcon(iconPrefix + "/" + "add.png");
     logo    = QIcon(iconPrefix + "/" + "logo.png");
+
+    defaultSceneSize = QSize(Low.cols*defaultPixmapSize, Low.rows*defaultPixmapSize);
 
 }

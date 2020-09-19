@@ -7,9 +7,7 @@
 #include "fielditem.h"
 
 // 预先定义的游戏等级
-const FieldArgs FieldArgs::Low{9, 9, 10};
-const FieldArgs FieldArgs::Medium{16, 16, 40};
-const FieldArgs FieldArgs::High{30, 16, 99};
+
 
 
 // 查找item的坐标

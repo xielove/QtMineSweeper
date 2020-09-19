@@ -24,7 +24,7 @@ XMinesScene::XMinesScene(QObject *parent)
 
 //    qDebug() << "启动一个新游戏";
 //    m_mineSweeper->startNewGame(FieldArgs::Low);
-    m_mineSweeper->startNewGame(FieldArgs::Low);
+    m_mineSweeper->startNewGame(AppResource::Low);
     int w = m_mineSweeper->boundingRect().width();
     int h = m_mineSweeper->boundingRect().height();
     resizeScene(w, h);
@@ -92,5 +92,7 @@ XMinesView::XMinesView(XMinesScene *scene, QWidget *parent)
 
 void XMinesView::resizeEvent(QResizeEvent *ev)
 {
+//    qDebug() << "resize event";
     m_scene->resizeScene(ev->size().width(), ev->size().height());
+//    qDebug() << "this->size = " << this->size();
 }

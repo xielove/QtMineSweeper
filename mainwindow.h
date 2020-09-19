@@ -9,8 +9,9 @@
 #include <QAction>
 #include <QComboBox>
 #include <QTimer>
+#include <QActionGroup>
 #include "scene.h"
-
+#include "settingdialog.h"
 #include "appresource.h"
 
 class UI_XMainWindow{
@@ -29,6 +30,7 @@ public:
     QAction* m_helpAction;
     QAction* m_aboutAction;
     QList<QAction* > levelAction;
+    QActionGroup *actionGroup;
 
 public:
     void setupUI(QMainWindow *mainWindow);
@@ -39,33 +41,33 @@ class XMainWindow : public QMainWindow
     Q_OBJECT
 public:
     XMainWindow();
+    virtual ~XMainWindow();
 
     XMinesScene *m_scene = nullptr;
     XMinesView *m_view = nullptr;
+    SettingDialog *m_setting = nullptr;
+
 private Q_SLOTS:
-    void onNewGame();
+    bool onNewGame();
     void onGamePauseed(bool);
-    void onDifficultyChanged(int);
+
+    void onActGroupTriggerd(QAction *);
+    void onLevelChanged(int);
     void onMinesCountChanged(int);
+
     void advanceTime();
     void onGameOver(bool);
 
 private:
     void sizeFitoLevel();
+    void setConnections();
+    void updateChecked();
 
 private:
-    QStatusBar *m_status;
-    QLabel *m_mineLabel;
-    QLabel *m_timeLabel;
-    QComboBox *m_levelCbx;
-    QAction* m_newGameAction;
-    QAction* m_PauseAction;
+    UI_XMainWindow *ui;
     QTimer *m_timer;
     int m_recordTime = 0;
-
     int m_level = 0;
-    void setMenu();
-    void setActions();
-    void setStatusBar();
+    QMap<QAction*, int> act2level;
 };
 #endif

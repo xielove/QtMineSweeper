@@ -2,7 +2,7 @@
 #include "QDebug"
 #include "appresource.h"
 #include <QGraphicsSceneMouseEvent>
-const int defaultPixmapSize = 30;
+
 
 bool MineSweeper::checkWin()
 {
@@ -121,7 +121,7 @@ void XMineSweeper::mouseMoveEvent(QGraphicsSceneMouseEvent *ev)
 }
 
 XMineSweeper::XMineSweeper(/* args */)
-    :m_cellSize(defaultPixmapSize)
+    :m_cellSize(AppResource::defaultPixmapSize)
 {
 //    qDebug() << "构造XMineSweeper" ;
     m_fieldItem = new FieldItem();
