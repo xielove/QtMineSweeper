@@ -16,8 +16,14 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="font">
+   <font>
+    <family>微软雅黑</family>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>配置</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">

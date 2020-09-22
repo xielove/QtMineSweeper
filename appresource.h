@@ -61,6 +61,9 @@ public:
     static const int hborder;
     static const int vborder;
 
+    static const QString helpUrl;
+    static const QString copyright;
+
 };
 
 #endif // APPRESOURCE_H

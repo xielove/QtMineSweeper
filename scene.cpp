@@ -13,6 +13,11 @@ XMinesScene::XMinesScene(QObject *parent)
     m_stoping->setPixmap(QPixmap(":/res/stoping.jpg"));
     addItem(m_stoping);
 
+    m_pausedText = new QGraphicsTextItem();
+    m_pausedText->setPlainText("暂停中...");
+//    m_pausedText->setPos()
+    addItem(m_pausedText);
+
     m_mineSweeper = new XMineSweeper();
     addItem(m_mineSweeper);
 
@@ -43,12 +48,22 @@ void XMinesScene::startNewGame(FieldArgs args)
 {
     m_mineSweeper->startNewGame(args);
 //    QRectF rect = m_mineSweeper->boundingRect();
-//    resizeScene(rect.width(), rect.height());
+    //    resizeScene(rect.width(), rect.height());
+}
+
+void XMinesScene::restartGame()
+{
+    m_mineSweeper->startNewGame(m_mineSweeper->fieldItem()->fieldArgs());
 }
 
 void XMinesScene::setGamePaused(bool paused)
 {
+    m_pausedText->setVisible(paused);
     m_mineSweeper->setVisible(!paused);
+
+    // TODO: 增加过渡场景
+
+
 }
 
 QSize XMinesScene::fieldSize()
@@ -62,6 +77,8 @@ void XMinesScene::centerField()
 {
     m_mineSweeper->setPos( sceneRect().width()/2 - m_mineSweeper->boundingRect().width()/2,
                      sceneRect().height()/2 - m_mineSweeper->boundingRect().height()/2 );
+//    m_pausedText->setPos( sceneRect().width()/2 - m_mineSweeper->boundingRect().width()/2,
+//                     sceneRect().height()/2 - m_mineSweeper->boundingRect().height()/2 );
 }
 
 void XMinesScene::onGameOver(bool win)

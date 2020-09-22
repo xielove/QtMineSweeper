@@ -14,6 +14,7 @@ public:
     explicit XMinesScene(QObject *parent);
     void resizeScene(int width, int height);
     void startNewGame(FieldArgs args);
+    void restartGame();
     void setGamePaused(bool paused);
     QSize fieldSize();
 
@@ -34,6 +35,7 @@ private Q_SLOTS:
 private:
     XMineSweeper *m_mineSweeper = nullptr;
     QGraphicsPixmapItem *m_stoping = nullptr;
+    QGraphicsTextItem *m_pausedText = nullptr;
 //    CellItem *item = nullptr;
     void updateBackground();
 };

@@ -7,6 +7,8 @@ SettingDialog::SettingDialog(QWidget *parent) :
     ui(new Ui::SettingDialog)
 {
     ui->setupUi(this);
+    this->setFixedSize(this->size());
+
 }
 
 SettingDialog::~SettingDialog()
@@ -27,6 +29,8 @@ void SettingDialog::on_buttonBox_clicked(QAbstractButton *button)
     if(button == ok){
         this->m_success = true;
     }
+//    this->close();
+//    this->
     this->close();
 }
 

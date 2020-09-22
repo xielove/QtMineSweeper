@@ -10,6 +10,9 @@
 #include <QMenuBar>
 #include <QActionGroup>
 #include <QLayout>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QMessageBox>
 
 XMainWindow::XMainWindow()
 {
@@ -45,28 +48,49 @@ void XMainWindow::setConnections()
     connect(m_scene, &XMinesScene::minesCountChanged, this, &XMainWindow::onMinesCountChanged);
     connect(m_scene, &XMinesScene::gameOver, this, &XMainWindow::onGameOver);
 
-    connect(ui->m_newGameAction, &QAction::triggered, this, &XMainWindow::onNewGame);
+    connect(ui->m_newGameAction, &QAction::triggered, this, static_cast<void(XMainWindow::*)()>(&XMainWindow::onNewGame));
     connect(ui->m_exitAction, &QAction::triggered, this, &XMainWindow::close);
     connect(ui->m_pauseAction, &QAction::toggled, this, &XMainWindow::onGamePauseed);
     connect(ui->m_levelCbx, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onLevelChanged);
     connect(ui->actionGroup, &QActionGroup::triggered, this, &XMainWindow::onActGroupTriggerd);
+
+    connect(ui->m_helpAction, &QAction::triggered, this, &XMainWindow::onHelpActionTriggerd);
+    connect(ui->m_aboutAction, &QAction::triggered, this, &XMainWindow::onAboutActionTriggerd);
+
 }
 
-void XMainWindow::updateChecked()
+void XMainWindow::updateChecked(int level)
 {
-    auto newact = ui->levelAction[m_level];
+    // 只更新数据，不触发信号
+    disconnect(ui->m_levelCbx, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onLevelChanged);
+    disconnect(ui->actionGroup, &QActionGroup::triggered, this, &XMainWindow::onActGroupTriggerd);
+
+    auto newact = ui->levelAction[level];
     auto newindex = ui->m_levelCbx;
     if(!newact->isChecked())
-        ui->levelAction[m_level]->setChecked(true);
-    if(newindex->currentIndex() != m_level)
-        ui->m_levelCbx->setCurrentIndex(m_level);
+        ui->levelAction[level]->setChecked(true);
+    if(newindex->currentIndex() != level)
+        ui->m_levelCbx->setCurrentIndex(level);
+
+    connect(ui->m_levelCbx, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XMainWindow::onLevelChanged);
+    connect(ui->actionGroup, &QActionGroup::triggered, this, &XMainWindow::onActGroupTriggerd);
+}
+void XMainWindow::onNewGame()
+{
+    m_timer->stop();
+    m_recordTime = 0;
+    advanceTime();
+    // 按照原来的配置重新开始游戏，默认是9*9-10
+    m_scene->restartGame();
+    m_timer->start();
+    onMinesCountChanged(0);
+    sizeFitoLevel();
 }
 
-bool XMainWindow::onNewGame()
+void XMainWindow::onNewGame(int level)
 {
-    qDebug() << "m_level = " << m_level;
     m_timer->stop();
-    switch (m_level) {
+    switch (level) {
         case 0:
             m_scene->startNewGame(AppResource::Low);
         break;
@@ -77,18 +101,18 @@ bool XMainWindow::onNewGame()
             m_scene->startNewGame(AppResource::High);
         break;
         case 3:
-            m_setting->exec();
-            if(m_setting->Success()){
-                qDebug() << m_setting->Success();
-                m_scene->startNewGame(m_setting->getArgs());
-            }else{
+           if(!this->onUserDefined()){
+                updateChecked(m_level);
                 m_timer->start();
-                return false;
-            }
+                return;
+           }
+        break;
+        default:
+            qDebug() << "invalid difficulty options" << endl;
+            m_timer->start();
+            return;
         break;
     }
-
-    qDebug() << "创建了一个新游戏";
 
     if( ui->m_pauseAction->isChecked() )
     {
@@ -102,8 +126,8 @@ bool XMainWindow::onNewGame()
     sizeFitoLevel();
 
     // 更新难度选择器的当前选项
-    updateChecked();
-    return true;
+    m_level = level;
+    updateChecked(level);
 }
 
 void XMainWindow::onGamePauseed(bool paused)
@@ -126,21 +150,12 @@ void XMainWindow::onActGroupTriggerd(QAction * act)
             act2level.insert(ui->levelAction[i], i);
         }
     }
-    onLevelChanged((act2level[act]));
+    this->onNewGame(act2level[act]);
 }
 
 void XMainWindow::onLevelChanged(int index)
 {
-    if(m_level == index){
-        return ;
-    }
-    int oldlevel = m_level;
-    this->m_level = index;
-    if(!onNewGame()){
-        qDebug() << "取消自定义";
-        m_level = oldlevel;
-        updateChecked();
-    }
+    this->onNewGame(index);
 }
 
 void XMainWindow::onMinesCountChanged(int mines)
@@ -163,6 +178,26 @@ void XMainWindow::onGameOver(bool win)
     m_timer->stop();
 }
 
+void XMainWindow::onHelpActionTriggerd()
+{
+    QDesktopServices::openUrl(QUrl(AppResource::helpUrl));
+}
+
+void XMainWindow::onAboutActionTriggerd()
+{
+    QMessageBox::about(this, "about", AppResource::copyright);
+}
+
+bool XMainWindow::onUserDefined()
+{
+    m_setting->exec();
+    if(!m_setting->Success()){
+        return false;
+    }
+    m_scene->startNewGame(m_setting->getArgs());
+    return true;
+}
+
 void XMainWindow::sizeFitoLevel()
 {
     int h = AppResource::vborder + m_scene->fieldSize().height();
@@ -178,6 +213,7 @@ void UI_XMainWindow::setupUI(QMainWindow *mw)
     mw->setFont(QFont("Microsoft YaHei"));
     mw->setWindowIcon(AppResource::logo);
     mw->setWindowTitle("扫雷");
+//    mw->setFixedSize();
 
 
     // 初始化Action

@@ -48,7 +48,8 @@ public:
     SettingDialog *m_setting = nullptr;
 
 private Q_SLOTS:
-    bool onNewGame();
+    void onNewGame();
+    void onNewGame(int level);
     void onGamePauseed(bool);
 
     void onActGroupTriggerd(QAction *);
@@ -58,10 +59,14 @@ private Q_SLOTS:
     void advanceTime();
     void onGameOver(bool);
 
+    void onHelpActionTriggerd();
+    void onAboutActionTriggerd();
+    bool onUserDefined();
+
 private:
     void sizeFitoLevel();
     void setConnections();
-    void updateChecked();
+    void updateChecked(int );
 
 private:
     UI_XMainWindow *ui;

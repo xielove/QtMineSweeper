@@ -22,6 +22,9 @@ QSize AppResource::defaultSceneSize;
 const int AppResource::hborder = 0;
 const int AppResource::vborder = 85;
 
+
+const QString AppResource::helpUrl = "https://baike.baidu.com/item/%E6%89%AB%E9%9B%B7/12543?fr=aladdin";
+const QString AppResource::copyright = "Copyright © 2020 Longyu Xie. All rights reserved.\n\nGithub: https://github.com/xielove/QtMineSweeper";
 void AppResource::initAppRes()
 {
     levels << "简单" << "中等" << "困难" << "自定义";
