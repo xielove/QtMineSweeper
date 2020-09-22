@@ -7,15 +7,15 @@
 XMinesScene::XMinesScene(QObject *parent)
     :QGraphicsScene(parent)
 {
-//    qDebug() << "创建雷区，并添加到场景中";
     setItemIndexMethod( NoIndex );
     m_stoping = new QGraphicsPixmapItem();
     m_stoping->setPixmap(QPixmap(":/res/stoping.jpg"));
     addItem(m_stoping);
 
     m_pausedText = new QGraphicsTextItem();
-    m_pausedText->setPlainText("暂停中...");
-//    m_pausedText->setPos()
+    m_pausedText->setPlainText("游戏暂停中...");
+    m_pausedText->hide();
+    m_pausedText->setFont(QFont("Microsoft YaHei", 12));
     addItem(m_pausedText);
 
     m_mineSweeper = new XMineSweeper();
@@ -27,13 +27,10 @@ XMinesScene::XMinesScene(QObject *parent)
     connect(m_mineSweeper, &XMineSweeper::gameOver, this, &XMinesScene::gameOver);
     connect(m_mineSweeper, &XMineSweeper::gameOver, this, &XMinesScene::onGameOver);
 
-//    qDebug() << "启动一个新游戏";
-//    m_mineSweeper->startNewGame(FieldArgs::Low);
     m_mineSweeper->startNewGame(AppResource::Low);
     int w = m_mineSweeper->boundingRect().width();
     int h = m_mineSweeper->boundingRect().height();
     resizeScene(w, h);
-//    qDebug() << "成功创建场景类";
 }
 
 void XMinesScene::resizeScene(int width, int height)
@@ -47,8 +44,6 @@ void XMinesScene::resizeScene(int width, int height)
 void XMinesScene::startNewGame(FieldArgs args)
 {
     m_mineSweeper->startNewGame(args);
-//    QRectF rect = m_mineSweeper->boundingRect();
-    //    resizeScene(rect.width(), rect.height());
 }
 
 void XMinesScene::restartGame()
@@ -77,8 +72,8 @@ void XMinesScene::centerField()
 {
     m_mineSweeper->setPos( sceneRect().width()/2 - m_mineSweeper->boundingRect().width()/2,
                      sceneRect().height()/2 - m_mineSweeper->boundingRect().height()/2 );
-//    m_pausedText->setPos( sceneRect().width()/2 - m_mineSweeper->boundingRect().width()/2,
-//                     sceneRect().height()/2 - m_mineSweeper->boundingRect().height()/2 );
+    m_pausedText->setPos( sceneRect().width()/2 - m_pausedText->boundingRect().width()/2,
+                     sceneRect().height()/2 - m_pausedText->boundingRect().height()/2 );
 }
 
 void XMinesScene::onGameOver(bool win)

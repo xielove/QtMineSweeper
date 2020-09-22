@@ -33,7 +33,8 @@ XMainWindow::XMainWindow()
     setCentralWidget(m_view);
 
     setConnections();
-    onNewGame();
+//    onNewGame();
+    sizeFitoLevel();
 }
 
 // Qt中QObject的子类对象，按照对象树析构
@@ -82,6 +83,11 @@ void XMainWindow::onNewGame()
     advanceTime();
     // 按照原来的配置重新开始游戏，默认是9*9-10
     m_scene->restartGame();
+    if( ui->m_pauseAction->isChecked() )
+    {
+        m_scene->setGamePaused(false);
+        ui->m_pauseAction->setChecked(false);
+    }
     m_timer->start();
     onMinesCountChanged(0);
     sizeFitoLevel();
