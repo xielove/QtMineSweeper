@@ -21,11 +21,35 @@ XMainWindow::XMainWindow()
 
     m_setting = new SettingDialog(this);
 
+//    qDebug() << menuWidget()->size();
+//    qDebug() << statusBar()->size();
+//    AppResource::vborder = ui->tmenuBar()->height()+statusBar()->height()+;
+    AppResource::vborder = ui->m_toolBar->height()+statusBar()->height()+menuBar()->height();
+    qDebug() << "AppResource::vborder = " << AppResource::vborder;
+//    AppResource::vborder = 85;
+
+//    AppResource::hborder = width() - centralWidget()->width();
+//    qDebug() << centralWidget();
+//    qDebug() << centralWidget()->size();
+
+//    qDebug() << size();
+//    qDebug() << rect();
+//    qDebug() << this->baseSize();
+//    qDebug() << this->PdmHeight;
+//    qDebug() << this->PdmWidth;
+//    qDebug() << this->frameSize();
+//    qDebug() << this->geometry().size();
+//    qDebug() << this->
+
     m_timer = new QTimer(this);
     m_timer->setInterval(1000);
 
     m_scene = new XMinesScene(this);
     m_view = new XMinesView( m_scene, this );
+
+//    qDebug() << m_view->size();
+//    qDebug() << m_scene->fieldSize();
+
     m_view->setCacheMode( QGraphicsView::CacheBackground );
     m_view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -114,7 +138,7 @@ void XMainWindow::onNewGame(int level)
            }
         break;
         default:
-            qDebug() << "invalid difficulty options" << endl;
+            qDebug() << "invalid difficulty options";
             m_timer->start();
             return;
         break;

@@ -58,8 +58,8 @@ public:
     static const FieldArgs Medium;
     static const FieldArgs High;
 
-    static const int hborder;
-    static const int vborder;
+    static int hborder;
+    static int vborder;
 
     static const QString helpUrl;
     static const QString copyright;

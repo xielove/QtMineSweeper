@@ -19,8 +19,8 @@ const FieldArgs AppResource::High{30, 16, 99};
 const int AppResource::defaultPixmapSize = 30;
 QSize AppResource::defaultSceneSize;
 
-const int AppResource::hborder = 0;
-const int AppResource::vborder = 85;
+int AppResource::hborder = 0;
+int AppResource::vborder = 0;
 
 
 const QString AppResource::helpUrl = "https://baike.baidu.com/item/%E6%89%AB%E9%9B%B7/12543?fr=aladdin";
